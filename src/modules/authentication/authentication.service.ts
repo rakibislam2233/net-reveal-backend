@@ -12,7 +12,7 @@ import {
   VerifyEmailRequest,
   UserPayload,
   LoginAttempt
-} from '../interfaces/auth.interface';
+} from './auth.interface';
 
 // In-memory storage for login attempts and refresh tokens (replace with database in production)
 const loginAttempts = new Map<string, LoginAttempt>();

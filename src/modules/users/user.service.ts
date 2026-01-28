@@ -4,7 +4,7 @@ import {
   UpdateUserPreferencesRequest, 
   UserListResponse,
   UserStatsResponse 
-} from '../interfaces/user.interface';
+} from './user.interface';
 
 export class UserService {
   // Mock user data storage (replace with actual database operations)

@@ -9,7 +9,7 @@ import {
   ForgotPasswordRequest,
   ResetPasswordRequest,
   VerifyEmailRequest
-} from '../interfaces/auth.interface';
+} from './auth.interface';
 
 export class AuthenticationController {
   // Register user

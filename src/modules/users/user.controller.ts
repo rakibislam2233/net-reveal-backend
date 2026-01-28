@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { userService } from '../services/user.service';
-import { UpdateUserRequest, UpdateUserPreferencesRequest } from '../interfaces/user.interface';
+import { userService } from './user.service';
+import { UpdateUserRequest, UpdateUserPreferencesRequest } from './user.interface';
 
 export class UserController {
   // Get all users (admin only)

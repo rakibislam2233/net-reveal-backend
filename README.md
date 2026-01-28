@@ -1,243 +1,307 @@
-# yourcr Backend
+# Netflix Movie Platform
 
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=prisma&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socket.io&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 
-A robust, scalable backend application built with Node.js, TypeScript, and PostgreSQL using Prisma ORM. This application provides a comprehensive foundation for building modern web applications with features like authentication, file uploads, real-time communication, and more.
+A comprehensive Netflix-like movie streaming platform backend built with Node.js, TypeScript, Express, and Prisma. Features TMDB API integration, user authentication, subscription management, and content tracking.
 
 ## 🚀 Features
 
-- **Authentication & Authorization**: JWT-based authentication with refresh tokens
-- **Database**: PostgreSQL with Prisma ORM and PostgreSQL adapter
-- **Real-time Communication**: Socket.IO integration with Redis adapter
-- **File Uploads**: Cloudinary integration for media storage
-- **Security**: Comprehensive security measures including CORS, CSRF, XSS protection
-- **Caching**: Redis integration for caching and session management
-- **Environment Configuration**: Flexible environment-based configuration
-- **Logging**: Structured logging with Winston
-- **API Documentation**: Auto-generated API documentation
+### 🎬 Movie Management
+
+- **TMDB API Integration**: Real-time movie data sync with The Movie Database
+- **Advanced Search**: Search movies by title, genre, year, rating
+- **Trending Content**: Discover trending and popular movies
+- **Genre Filtering**: Browse movies by categories
+- **Video Management**: Trailers, teasers, and behind-the-scenes content
+
+### 👤 User System
+
+- **Authentication**: JWT-based secure authentication
+- **User Profiles**: Personalized user accounts
+- **Preferences**: Customizable viewing preferences
+- **Session Management**: Secure session handling
+
+### 💳 Subscription Management
+
+- **Multiple Tiers**: FREE, BASIC, PREMIUM, PREMIUM_PLUS plans
+- **Feature-based Access**: Quality limits, device limits, download permissions
+- **Billing Integration**: Payment method and subscription tracking
+- **Usage Analytics**: Monitor subscription usage
+
+### 📝 Content Interaction
+
+- **Watchlists**: Multiple list types (Watchlist, Favorites, Watched, Interested)
+- **Ratings & Reviews**: 1-10 star rating system with reviews
+- **Watch History**: Track viewing progress and completion
+- **Continue Watching**: Resume partially watched content
+
+### 📊 Analytics & Insights
+
+- **Viewing Statistics**: Personal viewing analytics
+- **Watch Trends**: Daily/weekly viewing patterns
+- **Rating Analytics**: Movie rating distributions
+- **Recommendation Engine**: Content suggestions based on preferences
 
 ## 🛠️ Tech Stack
 
-- **Runtime**: ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node.js&logoColor=white) Node.js
-- **Language**: ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) TypeScript
-- **Framework**: ![Express.js](https://img.shields.io/badge/Express.js-404D59?style=flat-square&logo=express&logoColor=white) Express.js
-- **Database**: ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white) PostgreSQL
-- **ORM**: ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=flat-square&logo=prisma&logoColor=white) Prisma with PostgreSQL adapter
-- **Authentication**: ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=JSON%20web%20tokens&logoColor=white) JWT, bcrypt
-- **Caching**: ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) Redis
-- **File Storage**: Cloudinary
-- **Real-time**: ![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white) Socket.IO
-- **Security**: Helmet, csurf, express-mongo-sanitize, hpp
-- **Logging**: Winston
-- **Testing**: Jest (planned)
-
-## 📋 Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-
-- Node.js (v16 or higher)
-- PostgreSQL database
-- Redis server
-- Cloudinary account (optional, for file uploads)
-
-## 🚀 Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/rakibislam2233/yourcr-backend.git
-cd yourcr-backend
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Set up environment variables (see `.env.example`):
-
-```bash
-cp .env.example .env
-```
-
-4. Update your `.env` file with appropriate values
-
-5. Run database migrations:
-
-```bash
-npx prisma migrate dev
-```
-
-6. Generate Prisma client:
-
-```bash
-npx prisma generate
-```
-
-7. Start the development server:
-
-```bash
-npm run dev
-```
+- **Backend**: Node.js, TypeScript, Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT tokens
+- **API Documentation**: RESTful API design
+- **External APIs**: TMDB (The Movie Database)
+- **Rate Limiting**: In-memory rate limiting
+- **Validation**: Input validation and sanitization
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app.ts              # Express application setup
-├── server.ts           # Server initialization and startup
-├── config/             # Configuration files
-│   ├── index.ts        # Main configuration
-│   ├── database.config.ts # Database configuration
-│   ├── redis.config.ts # Redis configuration
-│   └── logger.config.ts # Logger configuration
-├── controllers/        # Request handlers
-├── middleware/         # Custom middleware
-├── models/             # Data models (via Prisma)
-├── routes/             # API route definitions
-├── services/           # Business logic
-├── utils/              # Utility functions
-├── socket/             # Socket.IO handlers
-└── modules/            # Feature modules
-    ├── auth/           # Authentication module
-    ├── user/           # User management module
-    └── otp/            # OTP management module
+├── modules/
+│   ├── movie/                 # Movie management
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   └── types/
+│   ├── subscription/          # Subscription management
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   └── types/
+│   ├── watchlist/             # Watchlist management
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   └── types/
+│   ├── rating/                # Ratings and reviews
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   └── types/
+│   └── watch-history/         # Watch history tracking
+│       ├── controllers/
+│       ├── services/
+│       ├── routes/
+│       └── types/
+├── config/
+│   ├── tmdb.config.ts        # TMDB API configuration
+│   └── index.ts              # App configuration
+├── middleware/
+│   └── rate-limit.middleware.ts
+├── routes/
+│   └── index.ts              # Main routes
+├── app.ts                     # Express app setup
+└── server.ts                  # Server startup
 ```
 
-## 🔐 Environment Variables
+## 🎯 API Endpoints
 
-Create a `.env` file in the root directory and add the following variables:
+### Movies
 
-```env
-# Application Environment
-NODE_ENV=development
-PORT=8082
-SOCKET=8082
+- `GET /api/v1/movies` - Get all movies with filtering
+- `GET /api/v1/movies/trending` - Get trending movies
+- `GET /api/v1/movies/search` - Search movies
+- `GET /api/v1/movies/genres` - Get all genres
 
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
+### Subscriptions
 
-# JWT Authentication
-JWT_ACCESS_SECRET=your_super_secret_access_token_key
-JWT_REFRESH_SECRET=your_super_secret_refresh_token_key
-JWT_RESET_PASSWORD_SECRET=your_super_secret_reset_password_key
+- `GET /api/v1/subscriptions/plans` - Get subscription plans
+- `GET /api/v1/subscriptions/user` - Get user subscription
+- `POST /api/v1/subscriptions/user` - Create subscription
 
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=your_redis_password
-REDIS_DB=0
+### Watchlists
 
-# Cloudinary (for file uploads)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+- `POST /api/v1/watchlist` - Add to watchlist
+- `GET /api/v1/watchlist` - Get user watchlist
+- `GET /api/v1/watchlist/stats` - Get watchlist statistics
 
-# Email Configuration
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
-EMAIL_FROM=your_email@gmail.com
+### Ratings
 
-# CORS
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
-DEV_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000
+- `POST /api/v1/ratings` - Create/update rating
+- `GET /api/v1/ratings/movie/:id` - Get movie ratings
+- `GET /api/v1/ratings/top-rated` - Get top rated movies
 
-# Security
-ENCRYPTION_KEY=your_encryption_key_for_sensitive_data
-```
+### Watch History
 
-## 🧪 Running Tests
+- `POST /api/v1/watch-history` - Update watch history
+- `GET /api/v1/watch-history/continue-watching` - Get continue watching
+- `GET /api/v1/watch-history/stats` - Get viewing statistics
 
-Currently, the test suite is being developed. To run existing tests:
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- PostgreSQL database
+- TMDB API key
+
+### Installation
+
+1. **Clone the repository**
 
 ```bash
-npm test
+git clone <repository-url>
+cd netflix-movie-platform
 ```
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+3. **Environment setup**
+   Create a `.env` file with:
+
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/netflix_platform"
+JWT_ACCESS_SECRET="your-super-secret-jwt-key"
+JWT_REFRESH_SECRET="your-super-secret-refresh-key"
+PORT=8082
+NODE_ENV=development
+```
+
+4. **Database setup**
+
+```bash
+# Generate Prisma client
+npm run prisma:generate
+
+# Run database migrations
+npm run prisma:migrate
+
+# (Optional) View database in Prisma Studio
+npm run prisma:studio
+```
+
+5. **Start development server**
+
+```bash
+npm run dev
+```
+
+The API will be available at `http://localhost:8082`
+
+## 📚 API Documentation
+
+Detailed API documentation is available in [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+
+## 🔧 Configuration
+
+### TMDB API Setup
+
+1. Get an API key from [TMDB](https://www.themoviedb.org/settings/api)
+2. The API key is already configured in `src/config/tmdb.config.ts`
+3. Movie data will be automatically synced from TMDB
+
+### Subscription Plans
+
+The platform supports 4 subscription tiers:
+
+- **FREE**: SD quality, 1 device, no downloads
+- **BASIC**: HD quality, 2 devices, 10 downloads
+- **PREMIUM**: Full HD, 4 devices, 25 downloads
+- **PREMIUM_PLUS**: 4K quality, 6 devices, 100 downloads
+
+## 🧪 Development
+
+### Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run test         # Run tests
+npm run prisma:generate  # Generate Prisma client
+npm run prisma:migrate    # Run database migrations
+npm run prisma:studio     # Open Prisma Studio
+```
+
+### Code Structure
+
+- **Controllers**: Handle HTTP requests and responses
+- **Services**: Business logic and data operations
+- **Routes**: API endpoint definitions
+- **Types**: TypeScript type definitions
+- **Middleware**: Request processing middleware
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based authentication
+- **Rate Limiting**: Prevent API abuse
+- **Input Validation**: Sanitize and validate all inputs
+- **CORS Protection**: Cross-origin resource sharing controls
+- **Helmet Security**: Security headers and protections
+
+## 📊 Features in Detail
+
+### Movie Management
+
+- Real-time sync with TMDB database
+- Advanced filtering and search capabilities
+- Video content management (trailers, clips)
+- Genre-based categorization
+- Trending and popular content discovery
+
+### User Experience
+
+- Personalized watchlists with multiple categories
+- Progress tracking for partially watched content
+- Rating and review system
+- Viewing statistics and insights
+- Recommendation engine based on preferences
+
+### Subscription System
+
+- Flexible tier-based pricing
+- Feature-based access control
+- Usage monitoring and analytics
+- Payment method integration
+- Subscription lifecycle management
 
 ## 🚀 Deployment
 
-### Production Build
+### Production Setup
 
-```bash
-npm run build
+1. Set production environment variables
+2. Build the application: `npm run build`
+3. Run database migrations: `npm run prisma:migrate`
+4. Start the server: `npm start`
+
+### Environment Variables
+
+```env
+DATABASE_URL="postgresql://..."
+JWT_ACCESS_SECRET="..."
+JWT_REFRESH_SECRET="..."
+PORT=8082
+NODE_ENV=production
 ```
-
-### Running in Production
-
-```bash
-npm start
-```
-
-### Docker Support
-
-Coming soon...
-
-## 🔐 Security Features
-
-- **CORS**: Configurable cross-origin resource sharing
-- **CSRF**: Cross-site request forgery protection
-- **XSS**: Cross-site scripting prevention
-- **SQL Injection**: Prisma ORM prevents SQL injection
-- **Rate Limiting**: Built-in rate limiting for API endpoints
-- **Input Validation**: Comprehensive input validation and sanitization
-
-## 📊 API Endpoints
-
-The API follows RESTful conventions and is organized by modules:
-
-- `/api/v1/auth` - Authentication endpoints
-- `/api/v1/users` - User management endpoints
-- `/api/v1/otp` - OTP management endpoints
-- `/api/v1/files` - File upload endpoints
-
-API documentation is auto-generated and available at `/api-docs` in development mode.
-
-## 🔄 Real-time Features
-
-The application supports real-time communication using Socket.IO with Redis adapter for horizontal scaling:
-
-- Real-time notifications
-- Live updates
-- Chat functionality (planned)
-
-## 🗂️ Database Schema
-
-The application uses PostgreSQL with the following main entities:
-
-- **User**: User accounts and profiles
-- **Otp**: One-time passwords for verification
-- **RefreshToken**: JWT refresh tokens
-- **FileUpload**: File metadata and storage information
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Support
+## 🆘 Support
 
-If you have any questions or need help, feel free to open an issue in the repository.
+For support and questions:
 
-## 🙏 Acknowledgments
+- Create an issue in the repository
+- Check the API documentation
+- Review the code comments for additional context
 
-- Express.js team
-- Prisma team
-- Socket.IO team
-- All the contributors who made this project possible
+---
+
+**Built with ❤️ for movie lovers everywhere**

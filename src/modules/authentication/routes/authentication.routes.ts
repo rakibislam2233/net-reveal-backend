@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { authenticationController } from '../controllers/authentication.controller';
-import { AuthValidation } from '../validation/auth.validation';
+import { authenticationController } from '../authentication.controller';
+import { AuthValidation } from '../auth.validation';
 import { generalApiRateLimiter, loginRateLimiter } from '../../middleware/rate-limit.middleware';
 
 const router = Router();
