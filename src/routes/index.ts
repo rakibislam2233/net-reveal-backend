@@ -4,11 +4,19 @@ import subscriptionRoutes from '../modules/subscription/routes/subscription.rout
 import watchlistRoutes from '../modules/watchlist/routes/watchlist.routes';
 import ratingRoutes from '../modules/rating/routes/rating.routes';
 import watchHistoryRoutes from '../modules/watch-history/routes/watch-history.routes';
+import authenticationRoutes from '../modules/authentication/routes/authentication.routes';
+import userRoutes from '../modules/users/routes/user.routes';
 
 const router = Router();
 
 // API version
 const API_VERSION = '/api/v1';
+
+// Authentication routes
+router.use(`${API_VERSION}/auth`, authenticationRoutes);
+
+// User routes
+router.use(`${API_VERSION}/users`, userRoutes);
 
 // Movie routes
 router.use(`${API_VERSION}/movies`, movieRoutes);
