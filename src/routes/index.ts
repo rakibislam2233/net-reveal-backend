@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import movieRoutes from '../modules/movie/routes/movie.routes';
 import subscriptionRoutes from '../modules/subscription/routes/subscription.routes';
+import watchlistRoutes from '../modules/watchlist/routes/watchlist.routes';
+import ratingRoutes from '../modules/rating/routes/rating.routes';
+import watchHistoryRoutes from '../modules/watch-history/routes/watch-history.routes';
 
 const router = Router();
 
@@ -12,6 +15,15 @@ router.use(`${API_VERSION}/movies`, movieRoutes);
 
 // Subscription routes
 router.use(`${API_VERSION}/subscriptions`, subscriptionRoutes);
+
+// Watchlist routes
+router.use(`${API_VERSION}/watchlist`, watchlistRoutes);
+
+// Rating routes
+router.use(`${API_VERSION}/ratings`, ratingRoutes);
+
+// Watch history routes
+router.use(`${API_VERSION}/watch-history`, watchHistoryRoutes);
 
 // Health check
 router.get('/health', (req, res) => {
