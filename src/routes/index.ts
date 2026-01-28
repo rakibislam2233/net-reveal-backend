@@ -5,7 +5,7 @@ import watchlistRoutes from '../modules/watchlist/routes/watchlist.routes';
 import ratingRoutes from '../modules/rating/routes/rating.routes';
 import watchHistoryRoutes from '../modules/watch-history/routes/watch-history.routes';
 import authenticationRoutes from '../modules/authentication/routes/authentication.routes';
-import userRoutes from '../modules/users/routes/user.routes';
+import userRoutes from '../modules/users/user.routes';
 
 const router = Router();
 

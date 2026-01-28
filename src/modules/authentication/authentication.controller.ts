@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { authenticationService } from '../services/authentication.service';
+import { authenticationService } from './authentication.service';
 import { 
   RegisterRequest, 
   LoginRequest, 
