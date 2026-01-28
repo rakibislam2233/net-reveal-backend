@@ -1,0 +1,313 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// User Model
+model User {
+    id              String           @id @default(cuid())
+    fullName        String
+    email           String           @unique
+    password        String
+    phoneNumber     String?
+    profileImage    String?
+    bio             String?
+    dateOfBirth     DateTime?
+    lastLogin       DateTime         @default(now())
+    role            UserRole         @default(USER)
+    status          UserStatus       @default(ACTIVE)
+    isEmailVerified Boolean          @default(false)
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+    
+    // Subscription related
+    subscription    Subscription?    @relation(fields: [subscriptionId], references: [id])
+    subscriptionId  String?
+    
+    // User preferences
+    preferences     UserPreferences?
+    
+    // Watch history
+    watchHistory    WatchHistory[]
+    
+    // User lists (watchlist, favorites, etc.)
+    userLists       UserList[]
+    
+    // Ratings
+    ratings         Rating[]
+    
+    // Sessions
+    sessions        Session[]
+
+    @@map("users")
+}
+
+model UserPreferences {
+    id              String   @id @default(cuid())
+    userId          String   @unique
+    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    // Language preferences
+    preferredLanguage String  @default("en")
+    audioLanguage     String  @default("en")
+    
+    // Content preferences
+    preferredGenres   String[] // Array of genre IDs
+    contentRatings    String[] // PG-13, R, etc.
+    
+    // Playback preferences
+    autoplayNext      Boolean @default(true)
+    subtitlesEnabled  Boolean @default(false)
+    
+    // UI preferences
+    theme             String   @default("dark") // dark, light
+    
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+
+    @@map("user_preferences")
+}
+
+model Subscription {
+    id              String           @id @default(cuid())
+    userId          String           @unique
+    user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    plan            SubscriptionPlan @default(BASIC)
+    status          SubscriptionStatus @default(ACTIVE)
+    
+    // Billing
+    startDate       DateTime         @default(now())
+    endDate         DateTime
+    nextBillingDate DateTime?
+    
+    // Payment
+    paymentMethod   String?
+    lastPaymentAt   DateTime?
+    amount          Float?
+    
+    // Features
+    maxQuality      String           @default("HD") // SD, HD, FULL_HD, 4K
+    maxDevices      Int              @default(1)
+    downloadsEnabled Boolean         @default(false)
+    
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+
+    @@map("subscriptions")
+}
+
+model Movie {
+    id              String           @id @default(cuid())
+    tmdbId          Int              @unique
+    title           String
+    originalTitle   String?
+    overview        String?
+    tagline         String?
+    
+    // Release info
+    releaseDate     DateTime?
+    runtime         Int?             // minutes
+    language        String?
+    originalLanguage String?
+    
+    // Ratings
+    voteAverage     Float?
+    voteCount       Int?
+    popularity      Float?
+    
+    // Visuals
+    posterPath      String?
+    backdropPath    String?
+    
+    // Classification
+    adult           Boolean          @default(false)
+    genreIds        Int[]            // TMDB genre IDs
+    
+    // Availability
+    status          MovieStatus      @default(PUBLISHED)
+    featured        Boolean          @default(false)
+    trendingRank    Int?
+    
+    // Metadata
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+    
+    // Relations
+    genres          MovieGenre[]
+    watchHistory    WatchHistory[]
+    userLists       UserList[]
+    ratings         Rating[]
+    videos          Video[]
+
+    @@map("movies")
+}
+
+model Genre {
+    id              Int              @id
+    name            String           @unique
+    tmdbId          Int              @unique
+    
+    // Relations
+    movies          MovieGenre[]
+
+    @@map("genres")
+}
+
+model MovieGenre {
+    id              String           @id @default(cuid())
+    movieId         String
+    genreId         Int
+    movie           Movie            @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    genre           Genre            @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+    @@unique([movieId, genreId])
+    @@map("movie_genres")
+}
+
+model Video {
+    id              String           @id @default(cuid())
+    movieId         String
+    movie           Movie            @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    
+    // Video info
+    tmdbId          String?
+    iso639_1        String?          // language code
+    iso3166_1       String?          // country code
+    name            String
+    key             String           // YouTube key or file path
+    site            String           // YouTube, Vimeo, or local
+    size            Int?
+    type            VideoType        @default(TRAILER)
+    official        Boolean          @default(false)
+    publishedAt     DateTime?
+    
+    createdAt       DateTime         @default(now())
+
+    @@map("videos")
+}
+
+model WatchHistory {
+    id              String           @id @default(cuid())
+    userId          String
+    user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    movieId         String
+    movie           Movie            @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    
+    // Progress tracking
+    watchedMinutes  Int              @default(0)
+    totalMinutes    Int
+    completed       Boolean          @default(false)
+    
+    // Timestamps
+    lastWatchedAt   DateTime         @default(now())
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+
+    @@unique([userId, movieId])
+    @@map("watch_history")
+}
+
+model UserList {
+    id              String           @id @default(cuid())
+    userId          String
+    user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    movieId         String
+    movie           Movie            @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    
+    listType        ListType         @default(WATCHLIST)
+    
+    createdAt       DateTime         @default(now())
+
+    @@unique([userId, movieId, listType])
+    @@map("user_lists")
+}
+
+model Rating {
+    id              String           @id @default(cuid())
+    userId          String
+    user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    movieId         String
+    movie           Movie            @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    
+    rating          Float            // 1-10 scale
+    review          String?
+    
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+
+    @@unique([userId, movieId])
+    @@map("ratings")
+}
+
+model Session {
+    id              String           @id @default(cuid())
+    userId          String           @unique
+    user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    sessionToken    String           @unique
+    refreshToken    String           @unique
+    expiresAt       DateTime
+    isActive        Boolean          @default(true)
+    deviceInfo      String?
+    ipAddress       String?
+    userAgent       String?
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+
+    @@map("sessions")
+}
+
+// Enums
+enum UserRole {
+    SUPER_ADMIN
+    ADMIN
+    MODERATOR
+    USER
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    BLOCKED
+    BANNED
+}
+
+enum SubscriptionPlan {
+    FREE
+    BASIC
+    PREMIUM
+    PREMIUM_PLUS
+}
+
+enum SubscriptionStatus {
+    ACTIVE
+    CANCELLED
+    EXPIRED
+    PENDING
+}
+
+enum MovieStatus {
+    DRAFT
+    PUBLISHED
+    ARCHIVED
+}
+
+enum VideoType {
+    TRAILER
+    TEASER
+    CLIP
+    FEATURETTE
+    BEHIND_THE_SCENES
+    BLOOPERS
+}
+
+enum ListType {
+    WATCHLIST
+    FAVORITES
+    WATCHED
+    INTERESTED
+}
