@@ -12,7 +12,6 @@ A comprehensive Netflix-like movie streaming platform backend built with Node.js
 ## 🚀 Features
 
 ### 🎬 Movie Management
-
 - **TMDB API Integration**: Real-time movie data sync with The Movie Database
 - **Advanced Search**: Search movies by title, genre, year, rating
 - **Trending Content**: Discover trending and popular movies
@@ -20,28 +19,24 @@ A comprehensive Netflix-like movie streaming platform backend built with Node.js
 - **Video Management**: Trailers, teasers, and behind-the-scenes content
 
 ### 👤 User System
-
 - **Authentication**: JWT-based secure authentication
 - **User Profiles**: Personalized user accounts
 - **Preferences**: Customizable viewing preferences
 - **Session Management**: Secure session handling
 
 ### 💳 Subscription Management
-
 - **Multiple Tiers**: FREE, BASIC, PREMIUM, PREMIUM_PLUS plans
 - **Feature-based Access**: Quality limits, device limits, download permissions
 - **Billing Integration**: Payment method and subscription tracking
 - **Usage Analytics**: Monitor subscription usage
 
 ### 📝 Content Interaction
-
 - **Watchlists**: Multiple list types (Watchlist, Favorites, Watched, Interested)
 - **Ratings & Reviews**: 1-10 star rating system with reviews
 - **Watch History**: Track viewing progress and completion
 - **Continue Watching**: Resume partially watched content
 
 ### 📊 Analytics & Insights
-
 - **Viewing Statistics**: Personal viewing analytics
 - **Watch Trends**: Daily/weekly viewing patterns
 - **Rating Analytics**: Movie rating distributions
@@ -101,32 +96,27 @@ src/
 ## 🎯 API Endpoints
 
 ### Movies
-
 - `GET /api/v1/movies` - Get all movies with filtering
 - `GET /api/v1/movies/trending` - Get trending movies
 - `GET /api/v1/movies/search` - Search movies
 - `GET /api/v1/movies/genres` - Get all genres
 
 ### Subscriptions
-
 - `GET /api/v1/subscriptions/plans` - Get subscription plans
 - `GET /api/v1/subscriptions/user` - Get user subscription
 - `POST /api/v1/subscriptions/user` - Create subscription
 
 ### Watchlists
-
 - `POST /api/v1/watchlist` - Add to watchlist
 - `GET /api/v1/watchlist` - Get user watchlist
 - `GET /api/v1/watchlist/stats` - Get watchlist statistics
 
 ### Ratings
-
 - `POST /api/v1/ratings` - Create/update rating
 - `GET /api/v1/ratings/movie/:id` - Get movie ratings
 - `GET /api/v1/ratings/top-rated` - Get top rated movies
 
 ### Watch History
-
 - `POST /api/v1/watch-history` - Update watch history
 - `GET /api/v1/watch-history/continue-watching` - Get continue watching
 - `GET /api/v1/watch-history/stats` - Get viewing statistics
@@ -134,7 +124,6 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - Node.js (v16 or higher)
 - PostgreSQL database
 - TMDB API key
@@ -142,21 +131,18 @@ src/
 ### Installation
 
 1. **Clone the repository**
-
 ```bash
 git clone <repository-url>
 cd netflix-movie-platform
 ```
 
 2. **Install dependencies**
-
 ```bash
 npm install
 ```
 
 3. **Environment setup**
-   Create a `.env` file with:
-
+Create a `.env` file with:
 ```env
 DATABASE_URL="postgresql://username:password@localhost:5432/netflix_platform"
 JWT_ACCESS_SECRET="your-super-secret-jwt-key"
@@ -166,7 +152,6 @@ NODE_ENV=development
 ```
 
 4. **Database setup**
-
 ```bash
 # Generate Prisma client
 npm run prisma:generate
@@ -179,7 +164,6 @@ npm run prisma:studio
 ```
 
 5. **Start development server**
-
 ```bash
 npm run dev
 ```
@@ -193,15 +177,12 @@ Detailed API documentation is available in [API_DOCUMENTATION.md](./API_DOCUMENT
 ## 🔧 Configuration
 
 ### TMDB API Setup
-
 1. Get an API key from [TMDB](https://www.themoviedb.org/settings/api)
 2. The API key is already configured in `src/config/tmdb.config.ts`
 3. Movie data will be automatically synced from TMDB
 
 ### Subscription Plans
-
 The platform supports 4 subscription tiers:
-
 - **FREE**: SD quality, 1 device, no downloads
 - **BASIC**: HD quality, 2 devices, 10 downloads
 - **PREMIUM**: Full HD, 4 devices, 25 downloads
@@ -210,7 +191,6 @@ The platform supports 4 subscription tiers:
 ## 🧪 Development
 
 ### Available Scripts
-
 ```bash
 npm run dev          # Start development server
 npm run build        # Build for production
@@ -222,7 +202,6 @@ npm run prisma:studio     # Open Prisma Studio
 ```
 
 ### Code Structure
-
 - **Controllers**: Handle HTTP requests and responses
 - **Services**: Business logic and data operations
 - **Routes**: API endpoint definitions
@@ -240,7 +219,6 @@ npm run prisma:studio     # Open Prisma Studio
 ## 📊 Features in Detail
 
 ### Movie Management
-
 - Real-time sync with TMDB database
 - Advanced filtering and search capabilities
 - Video content management (trailers, clips)
@@ -248,7 +226,6 @@ npm run prisma:studio     # Open Prisma Studio
 - Trending and popular content discovery
 
 ### User Experience
-
 - Personalized watchlists with multiple categories
 - Progress tracking for partially watched content
 - Rating and review system
@@ -256,7 +233,6 @@ npm run prisma:studio     # Open Prisma Studio
 - Recommendation engine based on preferences
 
 ### Subscription System
-
 - Flexible tier-based pricing
 - Feature-based access control
 - Usage monitoring and analytics
@@ -266,14 +242,12 @@ npm run prisma:studio     # Open Prisma Studio
 ## 🚀 Deployment
 
 ### Production Setup
-
 1. Set production environment variables
 2. Build the application: `npm run build`
 3. Run database migrations: `npm run prisma:migrate`
 4. Start the server: `npm start`
 
 ### Environment Variables
-
 ```env
 DATABASE_URL="postgresql://..."
 JWT_ACCESS_SECRET="..."
@@ -297,7 +271,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🆘 Support
 
 For support and questions:
-
 - Create an issue in the repository
 - Check the API documentation
 - Review the code comments for additional context

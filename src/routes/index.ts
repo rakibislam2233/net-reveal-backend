@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import movieRoutes from '../modules/movie/routes/movie.routes';
-import subscriptionRoutes from '../modules/subscription/routes/subscription.routes';
+import movieRoutes from '../modules/movie/movie.routes';
+import subscriptionRoutes from '../modules/subscription/subscription.routes';
 import watchlistRoutes from '../modules/watchlist/routes/watchlist.routes';
-import ratingRoutes from '../modules/rating/routes/rating.routes';
+import ratingRoutes from '../modules/rating/rating.routes';
 import watchHistoryRoutes from '../modules/watch-history/routes/watch-history.routes';
 import authenticationRoutes from '../modules/authentication/routes/authentication.routes';
 import userRoutes from '../modules/users/user.routes';

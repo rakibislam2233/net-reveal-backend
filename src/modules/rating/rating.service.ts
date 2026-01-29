@@ -1,4 +1,4 @@
-import { Rating, CreateRatingRequest, UpdateRatingRequest, RatingResponse, MovieRatingStats, UserRatingStats } from '../types/rating.types';
+import { Rating, CreateRatingRequest, UpdateRatingRequest, RatingResponse, MovieRatingStats, UserRatingStats } from './rating.types';
 
 export class RatingService {
   // Mock data storage (replace with actual database)

@@ -1,49 +1,42 @@
-import { RedisUtils } from '../../utils/redis.utils';
+import { StatusCodes } from 'http-status-codes';
+import ApiError from '../../utils/ApiError';
 import { IOtpSession, OtpType } from './otp.interface';
 import { generateSecureOtp, generateSessionId } from './otp.utils';
-import { AUTH_CACHE_KEY, AUTH_CACHE_TTL } from '../auth/auth.cache';
-import { sendResetPasswordEmail, sendVerificationEmail } from '../../utils/emailTemplates';
-import ApiError from '../../utils/ApiError';
-import { StatusCodes } from 'http-status-codes';
 
-interface IUserPayload {
-  id: string;
-  email: string;
-}
+// In-memory storage for OTP sessions (replace with database in production)
+const otpSessions = new Map<string, IOtpSession>();
 
-const createOtpSession = async (user: IUserPayload, type: OtpType): Promise<string> => {
-  const otp = await generateSecureOtp();
-  const sessionId = await generateSessionId(36);
+const OTP_SESSION_TTL = 10 * 60 * 1000; // 10 minutes
+
+const createOtpSession = async (email: string, type: OtpType) => {
+  const sessionId = await generateSessionId();
+  const code = await generateSecureOtp();
 
   const sessionData: IOtpSession = {
-    userId: user.id,
-    email: user.email,
-    code: otp.toString(),
+    email,
+    userId: sessionId, // Use sessionId as userId since interface requires it
+    code,
     type,
     attempts: 0,
     createdAt: new Date(),
   };
 
-  // Set session in redis
-  await RedisUtils.setCache(
-    AUTH_CACHE_KEY.OTP_SESSION(sessionId),
-    sessionData,
-    AUTH_CACHE_TTL.OTP_SESSION
-  );
+  // Store session in memory
+  otpSessions.set(sessionId, sessionData);
 
-  // Send email asynchronously based on type
-  if (type === OtpType.EMAIL_VERIFICATION) {
-    await sendVerificationEmail(user.email, otp.toString());
-  } else if (type === OtpType.RESET_PASSWORD) {
-    await sendResetPasswordEmail(user.email, otp.toString());
-  }
+  // Auto-cleanup after TTL
+  setTimeout(() => {
+    otpSessions.delete(sessionId);
+  }, OTP_SESSION_TTL);
 
-  return sessionId;
+  return {
+    sessionId,
+    code,
+  };
 };
 
 const verifyOtpSession = async (sessionId: string, code: string) => {
-  const sessionKey = AUTH_CACHE_KEY.OTP_SESSION(sessionId);
-  const sessionData = await RedisUtils.getCache<IOtpSession>(sessionKey);
+  const sessionData = otpSessions.get(sessionId);
 
   if (!sessionData) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid or expired session');
@@ -51,68 +44,83 @@ const verifyOtpSession = async (sessionId: string, code: string) => {
 
   // Max attempts reached
   if (sessionData.attempts >= 5) {
-    await RedisUtils.deleteCache(sessionKey);
+    otpSessions.delete(sessionId);
     throw new ApiError(StatusCodes.TOO_MANY_REQUESTS, 'Too many attempts. Please try again later.');
   }
 
   // Code mismatch
   if (sessionData.code !== code) {
     sessionData.attempts += 1;
-    await RedisUtils.setCache(sessionKey, sessionData, AUTH_CACHE_TTL.OTP_SESSION);
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid OTP code');
   }
 
   // On success, delete the session and return data
-  await RedisUtils.deleteCache(sessionKey);
+  otpSessions.delete(sessionId);
 
   return {
     email: sessionData.email,
     type: sessionData.type,
-    userId: sessionData.userId,
   };
 };
 
 const resendOtpSession = async (sessionId: string) => {
-  const sessionKey = AUTH_CACHE_KEY.OTP_SESSION(sessionId);
-  const sessionData = await RedisUtils.getCache<IOtpSession>(sessionKey);
+  const sessionData = otpSessions.get(sessionId);
 
   if (!sessionData) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid or expired session');
   }
 
-  // Throttle check
-  const timeSinceCreation = Date.now() - new Date(sessionData.createdAt).getTime();
-  const cooldownMs = AUTH_CACHE_TTL.OTP_RESEND_COOLDOWN * 1000;
-
-  if (timeSinceCreation < cooldownMs) {
-    const remainingSeconds = Math.ceil((cooldownMs - timeSinceCreation) / 1000);
-    throw new ApiError(
-      StatusCodes.TOO_MANY_REQUESTS,
-      `Please wait ${remainingSeconds} seconds before requesting a new OTP.`
-    );
+  // Check if enough time has passed for resend (1 minute)
+  const now = new Date();
+  const timeDiff = now.getTime() - sessionData.createdAt.getTime();
+  
+  if (timeDiff < 60 * 1000) { // 1 minute
+    throw new ApiError(StatusCodes.TOO_MANY_REQUESTS, 'Please wait before requesting a new OTP');
   }
 
-  // Generate new OTP and reset attempts
-  const otp = await generateSecureOtp();
-  sessionData.code = otp.toString();
+  // Generate new code
+  const newCode = await generateSecureOtp();
+  sessionData.code = newCode;
   sessionData.attempts = 0;
   sessionData.createdAt = new Date();
 
-  await RedisUtils.setCache(sessionKey, sessionData, AUTH_CACHE_TTL.OTP_SESSION);
+  // Update session
+  otpSessions.set(sessionId, sessionData);
 
   // Trigger Email
   if (sessionData.type === OtpType.EMAIL_VERIFICATION) {
-    await sendVerificationEmail(sessionData.email, otp.toString());
+    // TODO: Send email verification code
+    console.log(`Email verification OTP for ${sessionData.email}: ${newCode}`);
   } else if (sessionData.type === OtpType.RESET_PASSWORD) {
-    await sendResetPasswordEmail(sessionData.email, otp.toString());
+    // TODO: Send password reset code
+    console.log(`Password reset OTP for ${sessionData.email}: ${newCode}`);
   }
 
   return {
-    email: sessionData.email,
+    sessionId,
+    code: newCode,
   };
 };
-export const OtpService = {
-  createOtpSession,
-  verifyOtpSession,
-  resendOtpSession,
+
+// Cleanup function to remove expired sessions (call this periodically)
+export const cleanupExpiredOtpSessions = (): void => {
+  const now = new Date().getTime();
+  let cleaned = 0;
+
+  for (const [sessionId, sessionData] of otpSessions.entries()) {
+    const sessionAge = now - sessionData.createdAt.getTime();
+    if (sessionAge > OTP_SESSION_TTL) {
+      otpSessions.delete(sessionId);
+      cleaned++;
+    }
+  }
+
+  if (cleaned > 0) {
+    console.log(`🧹 Cleaned up ${cleaned} expired OTP sessions`);
+  }
 };
+
+// Auto-cleanup every 5 minutes
+setInterval(cleanupExpiredOtpSessions, 5 * 60 * 1000);
+
+export { createOtpSession, verifyOtpSession, resendOtpSession };

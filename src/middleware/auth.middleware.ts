@@ -3,7 +3,6 @@ import { StatusCodes } from 'http-status-codes';
 import { IDecodedToken } from '../shared/interfaces/jwt.interface';
 import ApiError from '../utils/ApiError';
 import { verifyAccessToken } from '../utils/jwt.utils';
-import { RedisUtils } from '../utils/redis.utils';
 
 const AUTH_CACHE_KEY = {
   BLACKlISTED_TOKEN: (token: string) => `blacklisted_token:${token}`,
@@ -28,13 +27,6 @@ const auth =
         throw new ApiError(StatusCodes.UNAUTHORIZED, 'Authorization header is missing');
       }
       const tokenValue = token.startsWith('Bearer ') ? token.slice(7) : token;
-
-      const isBlacklisted = await RedisUtils.existsCache(
-        AUTH_CACHE_KEY.BLACKlISTED_TOKEN(tokenValue)
-      );
-      if (isBlacklisted) {
-        throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized to access');
-      }
 
       // Verify token and get decoded user
       const verifiedUser = verifyAccessToken(tokenValue);

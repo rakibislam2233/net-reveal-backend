@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { authenticationController } from '../authentication.controller';
-import { AuthValidation } from '../auth.validation';
 import { generalApiRateLimiter, loginRateLimiter } from '../../middleware/rate-limit.middleware';
+import { AuthValidation } from './auth.validation';
+import { authenticationController } from './authentication.controller';
 
 const router = Router();
 
